@@ -17,6 +17,23 @@ para outros projetos de atendimento, agendamento e suporte.
 - Ser reutilizável como base para novos bots
 
 ---
+## 🧩 Visão de Produto
+
+Este projeto representa uma **base reutilizável de chatbot com IA**
+pensada para pequenas e médias operações que precisam de:
+
+- atendimento automático
+- triagem de clientes
+- respostas rápidas
+- agendamento integrado
+
+A arquitetura prioriza:
+- simplicidade
+- baixo custo operacional
+- rápida adaptação para novos clientes
+
+O mesmo core pode ser reutilizado em diferentes contextos,
+mudando apenas o canal de entrada ou integrações externas.
 
 ## 🧱 Arquitetura (resumida)
 
