@@ -1,0 +1,366 @@
+{
+  "name": "chatbot_gj",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b52f8c94-6c43-414f-a36e-81c484f6a31c",
+              "name": "mensagem_usuario",
+              "value": "e aí, blza? será que o Flávio Bolsonaro ganha em 2026?",
+              "type": "string"
+            },
+            {
+              "id": "4b50e436-f5dc-4897-b87d-8f1f837fbd37",
+              "name": "telefone_usuario",
+              "value": "5524999999999",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        32,
+        0
+      ],
+      "id": "ce2d888e-650c-445d-ab7c-d89214e006b3",
+      "name": "set_padronizar_entradas"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        192,
+        224
+      ],
+      "id": "bfe81167-a720-4022-b793-cc44dcb7821b",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "41LjB2C8D2QDe7sR",
+          "name": "openai_chatbot_gj"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        0
+      ],
+      "id": "63f94d13-66d8-4c29-8a55-8d8db50556ac",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{$json.mensagem_usuario}}\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Você é um assistente virtual do salão infantil Gil Jubinha.\n\nSua tarefa é:\n1) Identificar a intenção da mensagem do usuário\n2) Responder de forma educada, curta e clara\n3) Nunca inventar preços, horários ou serviços\n4) Nunca assumir informações que não foram fornecidas\n\nIntenções possíveis:\n- saudacao\n- preco_servicos\n- agendamento\n- humano\n- fora_escopo\n\nRegras:\n- Se a mensagem for apenas cumprimento → intenção = saudacao\n- Se perguntar sobre valores, preços ou serviços → preco_servicos\n- Se pedir marcar horário ou falar de data → agendamento\n- Se pedir falar com alguém → humano\n- Qualquer outra coisa → fora_escopo\n\nResponda SEMPRE no formato JSON exatamente assim:\n\n{\n  \"intencao\": \"uma_das_intencoes\",\n  \"resposta\": \"texto amigável para o cliente\"\n}\n\nNunca responda fora desse formato.\nNunca adicione explicações.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        256,
+        0
+      ],
+      "id": "15b5dad4-08bb-4f55-acf9-b433dc8e7f28",
+      "name": "ai_agent_intencao_resposta"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.output.intencao}}\n",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "1d31e3ee-f5fc-43e4-a5ef-0933d04a8315"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "9a8487a4-ad7d-4fc0-b7de-02eec738925e",
+                    "leftValue": "saudacao",
+                    "rightValue": "saudacao",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "9734e036-7345-4389-84fa-b812ce76a671",
+                    "leftValue": "preco_servicos",
+                    "rightValue": "preco_servicos",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "4e8a0fcc-b0f8-4bc6-9dfd-b43881056587",
+                    "leftValue": "agendamento",
+                    "rightValue": "agendamento",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "860aa6f7-2bd5-47cc-84c5-5cb9bbec2ae3",
+                    "leftValue": "humano",
+                    "rightValue": "humano",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "none"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        608,
+        -48
+      ],
+      "id": "bd508d58-d932-4eb6-b4ba-87c91e4f046f",
+      "name": "switch_por_intencao"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"intencao\": \"string\",\n  \"resposta\": \"string\"\n}\n\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        224
+      ],
+      "id": "2d53aad4-b4cd-4c53-b5c5-cdf6e5d0d91d",
+      "name": "parser_intencao_resposta"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "962916180231507",
+        "recipientPhoneNumber": "=5524992999499\n",
+        "textBody": "={{$json.output.resposta}}\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        0
+      ],
+      "id": "37743675-8598-4a67-98e3-beb6f5743b48",
+      "name": "whatsapp_send_resposta",
+      "webhookId": "d3fe7c5e-177d-4c15-88d7-c3df9b3bbddc",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "adKbcQZrG4X5m32y",
+          "name": "WhatsApp account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "set_padronizar_entradas": {
+      "main": [
+        [
+          {
+            "node": "ai_agent_intencao_resposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "ai_agent_intencao_resposta",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "set_padronizar_entradas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ai_agent_intencao_resposta": {
+      "main": [
+        [
+          {
+            "node": "switch_por_intencao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "switch_por_intencao": {
+      "main": [
+        [
+          {
+            "node": "whatsapp_send_resposta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "whatsapp_send_resposta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "whatsapp_send_resposta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "whatsapp_send_resposta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "whatsapp_send_resposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parser_intencao_resposta": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "ai_agent_intencao_resposta",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "566bacef-fb61-4e51-b254-dfb1c0fabddf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7591b26145e58f115d7c4d8f28dcfe84a37bedfde2b316afdecb5a7b342cd266"
+  },
+  "id": "TV9qEKdw9pAMsnEw",
+  "tags": []
+}
