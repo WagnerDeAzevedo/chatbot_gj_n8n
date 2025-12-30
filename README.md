@@ -35,6 +35,28 @@ Arquitetura propositalmente simples para:
 
 ---
 
+## ♻️ Como reutilizar este projeto
+
+Este repositório foi pensado como **core reutilizável**.
+
+O workflow principal **não depende da origem da mensagem**.
+Ele assume que a entrada já foi padronizada por um adapter externo
+(ex: WhatsApp, API REST, formulário, CRM).
+
+### Entrada esperada
+- `mensagem_usuario`
+- `telefone_usuario`
+
+Qualquer canal que entregue esses campos pode reutilizar
+o mesmo fluxo sem alterações estruturais.
+
+### Benefícios
+- Reuso imediato para novos clientes
+- Troca de canal sem reescrever lógica
+- Menor custo de manutenção
+
+---
+
 ## 🧠 Intenções suportadas
 
 - `saudacao`
@@ -55,11 +77,12 @@ Novas intenções podem ser adicionadas sem inflar o workflow.
 
 ---
 
-## 🚀 Próximos passos
+## 🧭 Evolução planejada
 
-- Integração com sistema de agendamento
-- Evolução controlada do agente
-- Reuso da arquitetura para outros clientes
+- Integração com sistemas de agendamento
+- Inclusão de novas intenções sem inflar o workflow
+- Monitoramento e métricas de atendimento
+- Reuso da arquitetura para múltiplos clientes
 
 ---
 
