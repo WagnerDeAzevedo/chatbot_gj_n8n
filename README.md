@@ -51,6 +51,14 @@ Arquitetura propositalmente simples para:
 - acelerar novos projetos
 
 ---
+## 📚 Base de Conhecimento
+
+Este projeto utiliza uma **Base de Conhecimento versionada**, separada da lógica do workflow, contendo as regras de negócio e informações do salão.
+
+A base de conhecimento atual está disponível em:
+- `knowledge_base/bk_v1.2.md`
+
+Ela pode evoluir de forma independente do workflow e do prompt do agente.
 
 ## ♻️ Como reutilizar este projeto
 
